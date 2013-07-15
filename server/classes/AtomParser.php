@@ -53,7 +53,7 @@ class AtomParser extends FeedParser
 
       $article = new Article();
       $article->guid = (string)$entry->id;
-      $article->published = time();
+      $article->published = 0;
 
       $pubDate = (string)$entry->published;
       if (!$pubDate)
@@ -70,6 +70,14 @@ class AtomParser extends FeedParser
       $links = $entry->xpath('atom:link[@rel="alternate"]');
       if ($links)
       {
+        $link = $links[0]->attributes();
+        $article->link_url = (string)$link->href;
+      }
+
+      // If still no link_url, try first link of any type
+      if (!$article->link_url)
+      {
+        $links = $entry->xpath('atom:link');
         $link = $links[0]->attributes();
         $article->link_url = (string)$link->href;
       }
