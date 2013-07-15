@@ -818,6 +818,25 @@ $().ready(function()
     content.find('.article-body a').attr('target', '_blank');
 
     entryDom.append(content);
+
+    // scroll to best possible position for viewing newly expanded entry if partially hidden
+    // if the entry is above the top edge, just scroll into view
+    if (entryDom.position().top < entryDom.parent().scrollTop())
+        entryDom[0].scrollIntoView();
+    else {
+        // otherwise if some of the bottom is occluded, scroll upwards
+        // to close any gap above the entry
+        var entryBottom = entryDom.position().top + entryDom.outerHeight();
+        var $entries = entryDom.parent();
+        var $container = $entries.parent();
+        var viewBottom = $container.scrollTop() + $container.innerHeight();
+        var difference = entryBottom - viewBottom;
+        var maxdifference = entryDom.position().top - $container.scrollTop();
+        if (difference > maxdifference)
+            difference = maxdifference;
+        if (difference > 0)
+           $container.scrollTop($container.scrollTop() + difference);
+    }
   };
 
   var collapseEntry = function(entryDom)
