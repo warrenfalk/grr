@@ -133,40 +133,6 @@ $().ready(function()
     $('#floating-nav').hide();
   });
 
-  // Menus
-
-  $('.menu').click(function(event)
-  {
-    event.stopPropagation();
-  });
-
-  $('.menu li').click(function()
-  {
-    var item = $(this);
-    var menu = item.closest('ul');
-
-    var groupName = null;
-    $.each(item.attr('class').split(/\s+/), function()
-    {
-      if (this.indexOf('group-') == 0)
-      {
-        groupName = this;
-        return false;
-      }
-    });
-
-    if (groupName)
-    {
-      $('.' + groupName).removeClass('selected-menu-item');
-      item.addClass('selected-menu-item');
-    }
-
-    $(menu.data('dropdown')).text(item.text());
-
-    menu.hide();
-    onMenuItemClick(menu.data('object'), item);
-  });
-
   // Buttons
 
   $('button.refresh').click(function()
@@ -301,8 +267,6 @@ $().ready(function()
 
     // Build the table
     var table = $('<table/>');
-    $('.shortcuts').append(table);
-
     for (var i = 0, n = categories.length; i < n; i += maxColumns)
     {
       var keepGoing = true;
@@ -339,6 +303,65 @@ $().ready(function()
         }
       }
     }
+
+    $('body').append($('<div />', { 'class': 'shortcuts' }).append(table));
+  };
+
+  var initMenus = function()
+  {
+    // Build the menus
+
+    $('body')
+    .append($('<ul />', { 'id': 'menu-root', 'class': 'menu' })
+      .append($('<li />', { 'class': 'menu-new-folder' }).text(l("New folder…")))
+      .append($('<li />', { 'class': 'menu-sub' }).text(l("Subscribe…"))))
+    .append($('<ul />', { 'id': 'menu-filter', 'class': 'menu', 'data-dropdown': 'button.filter' })
+      .append($('<li />', { 'class': 'menu-all-items group-filter' , 'data-value': 'all' }).text(l("All items")))
+      .append($('<li />', { 'class': 'menu-new-items group-filter' , 'data-value': 'new' }).text(l("New items")))
+      .append($('<li />', { 'class': 'menu-starred-items group-filter' , 'data-value': 'star' }).text(l("Starred"))))
+    .append($('<ul />', { 'id': 'menu-feed', 'class': 'menu' })
+      .append($('<li />', { 'class': 'menu-rename-sub' }).text(l("Rename subscription…")))
+      .append($('<li />', { 'class': 'menu-unsub' }).text(l("Unsubscribe…"))))
+    .append($('<ul />', { 'id': 'menu-folder', 'class': 'menu' })
+      .append($('<li />', { 'class': 'menu-new-folder' }).text(l("New folder…")))
+      .append($('<li />', { 'class': 'menu-sub' }).text(l("Subscribe…")))
+      .append($('<div />', { 'class': 'divider' }))
+      .append($('<li />', { 'class': 'menu-rename-sub' }).text(l("Rename subscription…")))
+      .append($('<li />', { 'class': 'menu-unsub' }).text(l("Unsubscribe from all…"))));
+
+    // Attach listeners
+
+    $('.menu').click(function(event)
+    {
+      event.stopPropagation();
+    });
+
+    $('.menu li').click(function()
+    {
+      var item = $(this);
+      var menu = item.closest('ul');
+
+      var groupName = null;
+      $.each(item.attr('class').split(/\s+/), function()
+      {
+        if (this.indexOf('group-') == 0)
+        {
+          groupName = this;
+          return false;
+        }
+      });
+
+      if (groupName)
+      {
+        $('.' + groupName).removeClass('selected-menu-item');
+        item.addClass('selected-menu-item');
+      }
+
+      $(menu.data('dropdown')).text(item.text());
+
+      menu.hide();
+      onMenuItemClick(menu.data('object'), item);
+    });
   };
 
   var toggleNavMode = function(floatedNavEnabled)
@@ -359,14 +382,13 @@ $().ready(function()
   var getPublishedDate = function(unixTimestamp)
   {
     var now = new Date();
-    var then = new Date(unixTimestamp * 1000);
+    var date = new Date(unixTimestamp * 1000);
+    
+    var sameDay = now.getDate() == date.getDate() 
+      && now.getMonth() == date.getMonth() 
+      && now.getFullYear() == date.getFullYear();
 
-    if (now.getDate() == then.getDate() 
-      && now.getMonth() == then.getMonth() 
-      && now.getYear() == then.getYear())
-      return then.toLocaleTimeString();
-    else 
-      return then.toLocaleDateString();
+    return dateTimeFormatter(date, sameDay);
   };
 
   // which: < 0 to select previous; > 0 to select next
@@ -1219,5 +1241,6 @@ $().ready(function()
     $(menu.data('dropdown')).text(selected.text());
   })();
 
+  initMenus();
   initHelp();
 });

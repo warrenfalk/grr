@@ -65,9 +65,14 @@ body
   color: #990000;
 }
 
+.houmu-rogo
+{
+  margin: 3px;
+}
+
 .navbar a
 {
-  color: #0000ee;
+  color: #0276FD;
   font-weight: bold;
   text-decoration: none;
 }
@@ -550,6 +555,7 @@ button.dropdown
 .select-article.down
 {
   margin-left: 0;
+  box-shadow: 0 1px 1px #aaa;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   background: url(../sprites.png) no-repeat 5px -240px #eee;
