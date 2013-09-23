@@ -930,6 +930,28 @@ $().ready(function()
 
     // Links in the content should open in a new window
     content.find('.article-body a').attr('target', '_blank');
+    // Replace relative or site-relative images with their absolute equivalents
+    // Note: this doesn't always work if the article link is going to be a redirect
+    //       and this usually indicates the author isn't trying to cooperate with
+    //       rss (e.g. scott adams)
+    var protocol = /^[a-zA-Z_]+:/;
+    $.each(content.find('.article-body img'), function(i, img) {
+       var s = img.getAttribute('src');
+       if (!s.match(protocol)) {
+           var anchor = document.createElement('a');
+           anchor.href = entry.link;
+           var ns = anchor.protocol + '//' + anchor.hostname;
+           if (anchor.port != '')
+               ns = ns + ':' + anchor.port;
+           if (s[0] != '/') {
+               var path = anchor.pathname;
+               var ls = path.lastIndexOf('/');
+               path = path.substring(0, ls + 1);
+               ns = ns + path;
+           }
+           img.setAttribute('src', ns + s);
+       }
+    });
 
     entryDom.append(content);
 
