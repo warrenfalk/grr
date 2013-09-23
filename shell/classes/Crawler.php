@@ -266,9 +266,10 @@ class Crawler
     // Personalize the articles
 
     $personalizeStatement = $this->db->prepare("
-          INSERT INTO user_articles (user_id, article_id) 
-               SELECT u.id user_id, 
-                      a.id article_id
+          INSERT INTO user_articles (user_id, article_id, feed_id) 
+               SELECT u.id, 
+                      a.id,
+                      a.feed_id
                  FROM articles a 
            INNER JOIN users u 
            INNER JOIN feed_folders ff ON ff.feed_id = a.feed_id AND ff.user_id = u.id 
@@ -329,7 +330,7 @@ class Crawler
 
     // Initialize DB
 
-    $this->db = new mysqli(MYSQL_HOSTNAME, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE);
+    $this->db = new mysqli(MYSQL_HOSTNAME, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_PORT, MYSQL_SOCKET);
     if ($this->db->connect_error)
       die('Connection error: '.mysqli_connect_error());
 

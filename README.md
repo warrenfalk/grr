@@ -5,9 +5,7 @@ grr >:(
 
 _grr_ consists of two components - the web application, with which the user interacts, and the background updater, which routinely updates feeds in the background.
 
-![Screenshot](http://i.imgur.com/WtY2LAT.png "Screenshot")
-
-See a (rather outdated) video of it here: http://www.youtube.com/watch?v=6gIGjweNu7Q
+![Screenshot](http://i.imgur.com/ny7ApSO.jpg "Screenshot")
 
 Clients
 -------
@@ -39,6 +37,7 @@ Additional features include:
 * Support for any number of user accounts
 * Built-in [OpenID] [6] support
 * Choice of two background updaters - standard sequential updater written in [PHP] [2], or high-performance concurrent updater written in [Go] [10]
+* [Google App Engine] [12] support (currently experimental)
 
 Requirements
 ------------
@@ -51,6 +50,8 @@ On the server side, _grr_ requires:
 * (optional) [Go] [10] runtimes with the [go-mysql-library] [11] package to use the alternative concurrent feed updater, instead of the default sequential updater written in PHP
 
 On the client side, _grr_ relies heavily on [JavaScript] [5] and probably needs a decent modern browser.
+
+_grr_ is compatible with [Google App Engine] [12] - though PHP support on GAE is currently experimental, and requires prior approval. [app.yaml](etc/app.yaml) is included - copy it to your project's 'server' directory, and replace 'grr-reader' with the name of your project.
 
 Installation
 ------------
@@ -96,3 +97,4 @@ _grr_ is currently in a late-beta stage, and as a result:
   [9]: https://github.com/melllvar/angrroid "angrroid"
   [10]: http://golang.org/ "Go"
   [11]: https://code.google.com/p/go-mysql-driver/ "go-mysql-driver"
+  [12]: https://developers.google.com/appengine/ "App Engine"
